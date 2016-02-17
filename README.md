@@ -3,11 +3,11 @@ A simple script to install and update luxe + snow more conveniently during activ
 
 ## Install
 
-haxelib install snowfall
+`haxelib install snowfall`
 
 ## Running
 
-haxelib run snowfall
+`haxelib run snowfall`
 Further instructions and options are available from there.
 
 ## Updating
