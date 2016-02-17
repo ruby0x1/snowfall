@@ -42,9 +42,11 @@ class M {
 
     function check_args() {
 
-        var args = arguable.ArgParser.parse(Sys.args());
+        var sys_args = Sys.args(); 
+            sys_args.pop();
+        var args = arguable.ArgParser.parse(sys_args);
 
-        if(args.invalid.length <= 1) {
+        if(args.invalid.length == 0) {
             log('\n> A temporary convenience for luxe & snow during active dev\n');
             return help();
         }
