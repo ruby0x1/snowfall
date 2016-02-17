@@ -208,7 +208,7 @@ class M {
                 var lib_url = url_for(lib);
 
                 log('> installing $lib - git clone $lib_url to <haxelib>${lib_path.replace(Haxe.haxelib_path,"")}\n');
-                Sys.command('git',['clone', '--progress', lib_url, lib_path]);
+                Sys.command('git',['clone', '--progress', '--recursive', lib_url, lib_path]);
                 U.run('haxelib', ['dev', lib, lib_path], true);
 
             } else {
