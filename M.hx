@@ -145,8 +145,8 @@ class M {
                         log('> you should edit $config_path to correct the path');
                         log('> or install the shortcuts manually.');
                     } else {
-                        var flow_path = U.normalize(Path.join([dest, 'flow']));
-                        var snowfall_path = U.normalize(Path.join([dest, 'snowfall']));
+                        var flow_path = U.normalize(Path.join([dest, 'flow.bat']));
+                        var snowfall_path = U.normalize(Path.join([dest, 'snowfall.bat']));
                         var ok = walias('flow', flow_path);
                         if(ok) ok = walias('snowfall', snowfall_path);
                         if(!ok) log('> can\'t continue');
