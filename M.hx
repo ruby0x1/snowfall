@@ -208,7 +208,7 @@ class M {
                 var lib_url = url_for(lib);
 
                 log('> installing $lib - git clone $lib_url to <haxelib>${lib_path.replace(Haxe.haxelib_path,"")}\n');
-                U.run('git',['clone', '--progress', lib_url, lib_path], true);
+                Sys.command('git',['clone', '--progress', lib_url, lib_path]);
                 U.run('haxelib', ['dev', lib, lib_path], true);
 
             } else {
@@ -218,7 +218,10 @@ class M {
                     var git_path = U.normalize(Path.join([cur.path,'.git']));
                     if(sys.FileSystem.exists(git_path)) {
                         log('> update $lib - git pull - run at ${cur.path}\n');
-                        U.run('git', ['pull', '--progress'], cur.path, true);
+                        var pre = Sys.getCwd();
+                        Sys.setCwd(cur.path);
+                        Sys.command('git', ['pull', '--progress']);
+                        Sys.setCwd(pre);
                     } else {
                         log('> Error - !! - cannot update dev version of a library, only git based versions');
                     }

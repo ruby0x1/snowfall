@@ -3,8 +3,8 @@
     "license": "MIT",
     "url": "https://snowkit.org/",
     "description": "A temporary convenience for luxe and snow users during active development. see https://snowkit.org",
-    "releasenote": "fix endless loops in update",
-    "version": "0.0.8",
+    "releasenote": "fix more endless loops",
+    "version": "0.0.9",
     "contributors": [ "underscorediscovery" ],
     "tags": [],
     "dependencies": {}
