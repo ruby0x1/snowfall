@@ -11,17 +11,12 @@ class M {
     static function main() i.init();
 
     var online = true;
-    var config : Dynamic;
 
     function init() {
 
         var str = sys.io.File.getContent('./haxelib.json');
         if(str == null || str == '') { log('haxelib.json can\'t be found for snowfall, is the cwd correct?'); return; }
         var json = haxe.Json.parse(str);
-
-        str = sys.io.File.getContent('./config.json');
-        if(str == null || str == '') { log('config.json can\'t be found for snowfall, is the cwd correct?'); return; }
-        config = haxe.Json.parse(str);
 
         log('snowfall ' + json.version);
 
@@ -70,7 +65,9 @@ class M {
         }
 
         if(action.name == 'shortcuts') {
-            shortcuts();
+            var path = '';
+            if(lib != null) path = lib.name;
+            shortcuts(path);
         } else {
             if(online) {
                 update(lib.name);
@@ -128,46 +125,52 @@ class M {
         return true;
     }
 
-    function shortcuts() {
-        
+    function shortcuts(config_path:String) {
+
         var os = Std.string(Sys.systemName()).toLowerCase();
         var us = Haxe.lib_current('snowfall');
-        var config_path = U.normalize(Path.join([us.path,'config.json']));
 
         log('\n> Installing shortcuts for `flow` and `snowfall` on $os');
+        if(config_path != '') {
+            log('> Using requested path: $config_path\n');
+        } else {
+            config_path = os == 'windows' ? 'C:/HaxeToolkit/haxe/' : '/usr/local/bin/';
+            log('> No path specified, default path is $config_path');
+            log('> You can enter a different one, or hit enter to use the default:');
+            var inval = Sys.stdin().readLine();
+            if(inval != '') {
+                config_path = inval;
+            }
+        }
+
+        log('> checking $config_path');
+        if(!sys.FileSystem.exists(config_path)) {
+            log('\n> error: $config_path doesn\'t exist!');
+            log('> you should give a valid location in your PATH,');
+            log('> or install the shortcuts manually.');
+            return;
+        }
 
         switch(os) {
             case 'windows':
-                var dest = config.shortcuts.windows;
-                if(dest != null && dest != "") {
-                    if(!sys.FileSystem.exists(dest)) {
-                        log('\n> error: $dest doesn\'t exist!');
-                        log('> you should edit $config_path to correct the path');
-                        log('> or install the shortcuts manually.');
-                    } else {
-                        var flow_path = U.normalize(Path.join([dest, 'flow.bat']));
-                        var snowfall_path = U.normalize(Path.join([dest, 'snowfall.bat']));
-                        var ok = walias('flow', flow_path);
-                        if(ok) ok = walias('snowfall', snowfall_path);
-                        if(!ok) log('> can\'t continue');
-                        if(ok) {
-                            log('\n> You should be to run flow and snowfall without the haxelib run prefix now');
-                            log('> done.');
-                        }
-                    }
+                var flow_path = U.normalize(Path.join([config_path, 'flow.bat']));
+                var snowfall_path = U.normalize(Path.join([config_path, 'snowfall.bat']));
+                var ok = walias('flow', flow_path);
+                if(ok) ok = walias('snowfall', snowfall_path);
+                if(!ok) log('> can\'t continue');
+                if(ok) {
+                    log('\n> You should be to run flow and snowfall without the haxelib run prefix now');
+                    log('> done.');
                 }
             case 'linux','mac':
-                var dest = os == 'linux' ? config.shortcuts.linux : config.shortcuts.mac;
-                if(dest != null && dest != "") {
-                    var flow_path = U.normalize(Path.join([dest, 'flow']));
-                    var snowfall_path = U.normalize(Path.join([dest, 'snowfall']));
-                    var ok = ualias('flow', flow_path);
-                    if(ok) ok = ualias('snowfall', snowfall_path);
-                    if(!ok) log('> can\'t continue');
-                    if(ok) {
-                        log('\n> You should be to run flow and snowfall without the haxelib run prefix now');
-                        log('> done.');
-                    }
+                var flow_path = U.normalize(Path.join([config_path, 'flow']));
+                var snowfall_path = U.normalize(Path.join([config_path, 'snowfall']));
+                var ok = ualias('flow', flow_path);
+                if(ok) ok = ualias('snowfall', snowfall_path);
+                if(!ok) log('> can\'t continue');
+                if(ok) {
+                    log('\n> You should be to run flow and snowfall without the haxelib run prefix now');
+                    log('> done.');
                 }
             case '_': throw "unknown platform: " + os;
         }
@@ -230,8 +233,8 @@ class M {
     function help() {
 
         log('options\n');
-        log('> update [lib]   |  update or install a lib (snow or luxe)');
-        log('> shortcuts      |  install "flow" & "snowfall" command line shortcuts');
+        log('> update [lib]     |  update or install a lib (snow or luxe)');
+        log('> shortcuts [path] |  install "flow" & "snowfall" command line shortcuts into [path]');
         log('\nnotes\n');
         log('> All dependencies of [lib] will be installed or updated.');
         log('> i.e `snowfall update luxe` will update snow, and flow.\n');

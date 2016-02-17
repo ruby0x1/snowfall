@@ -1,7 +1,0 @@
-{
- "shortcuts" :{
-    "windows":"C:/HaxeToolkit/haxe/",
-    "linux":"/usr/local/bin",
-    "mac":"/usr/local/bin/"
- }
-}
