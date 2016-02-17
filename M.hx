@@ -16,14 +16,14 @@ class M {
     function init() {
 
         var str = sys.io.File.getContent('./haxelib.json');
-        if(str == null || str == '') { log('haxelib.json can\'t be found for snõwfall, is the cwd correct?'); return; }
+        if(str == null || str == '') { log('haxelib.json can\'t be found for snowfall, is the cwd correct?'); return; }
         var json = haxe.Json.parse(str);
 
         str = sys.io.File.getContent('./config.json');
-        if(str == null || str == '') { log('config.json can\'t be found for snõwfall, is the cwd correct?'); return; }
+        if(str == null || str == '') { log('config.json can\'t be found for snowfall, is the cwd correct?'); return; }
         config = haxe.Json.parse(str);
 
-        log('snõwfall ' + json.version);
+        log('snowfall ' + json.version);
 
         Haxe.init();
 
@@ -49,7 +49,7 @@ class M {
         var args = arguable.ArgParser.parse(Sys.args());
 
         if(args.invalid.length <= 1) {
-            log('\n> A temporary convenience for luxe & snõw during active dev\n');
+            log('\n> A temporary convenience for luxe & snow during active dev\n');
             return help();
         }
 
@@ -57,7 +57,7 @@ class M {
         var lib = args.invalid.length > 1 ? args.invalid[1] : null;
 
         log('\n> haxe - version - ${Haxe.version.ver}');
-        log('> haxelib - path - $Haxe.haxelib_path\n');
+        log('> haxelib - path - ${Haxe.haxelib_path}\n');
 
         if(['shortcuts','update'].indexOf(action.name) == -1) {
             log('\n> unknown option `${action.name}`\n');
@@ -121,7 +121,7 @@ class M {
             log('> $name alias written to $path');
         } catch(e:Dynamic) {
             log('> error when writing to $path!');
-            log('> you might need to use `sudo haxelib run snowfall shortcuts`');
+            log('> you might need to manually install the shortcuts.');
             log('> ' + e);
             return false;
         }
@@ -145,8 +145,15 @@ class M {
                         log('> you should edit $config_path to correct the path');
                         log('> or install the shortcuts manually.');
                     } else {
-                        var flow_path = U.normalize(Path.join([dest, 'flow.bat']));
-                        log('> flow will be flow_path');
+                        var flow_path = U.normalize(Path.join([dest, 'flow']));
+                        var snowfall_path = U.normalize(Path.join([dest, 'snowfall']));
+                        var ok = walias('flow', flow_path);
+                        if(ok) ok = walias('snowfall', snowfall_path);
+                        if(!ok) log('> can\'t continue');
+                        if(ok) {
+                            log('\n> You should be to run flow and snowfall without the haxelib run prefix now');
+                            log('> done.');
+                        }
                     }
                 }
             case 'linux','mac':
