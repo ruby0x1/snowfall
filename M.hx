@@ -34,7 +34,7 @@ class M {
         var lat = Haxe.lib_latest(name);
         if(lat != null && lat != null) {
             if(Haxe.lib_compare(cur, lat) < 0) {
-                log('> $name ${lat.ver} is available, your $name version is set to ${cur.ver}. You can run `haxelib update $name` to update.');
+                log('> $name ${lat.ver} is available, your $name version is set to ${cur.ver}.\n  - You can run `haxelib update $name` to update.');
             }
         }
         return lat != null;
