@@ -3,8 +3,8 @@
     "license": "MIT",
     "url": "https://snowkit.org/",
     "description": "A temporary convenience for luxe and snow users during active development. see https://snowkit.org",
-    "releasenote": "fix shortcut path options",
-    "version": "0.0.5",
+    "releasenote": "tidy update messages",
+    "version": "0.0.6",
     "contributors": [ "underscorediscovery" ],
     "tags": [],
     "dependencies": {}
