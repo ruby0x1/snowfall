@@ -22,6 +22,7 @@ class M {
 
         Haxe.init();
 
+        log('');
         online = check_lib_update('snowfall');
         if(online) check_lib_update('hxcpp');
         check_args();
@@ -33,7 +34,7 @@ class M {
         var lat = Haxe.lib_latest(name);
         if(lat != null && lat != null) {
             if(Haxe.lib_compare(cur, lat) < 0) {
-                log('\n> $name ${lat.ver} is available, your $name version is set to ${cur.ver}');
+                log('> $name ${lat.ver} is available, your $name version is set to ${cur.ver}. You can run `haxelib update $name` to update.');
             }
         }
         return lat != null;
