@@ -1,0 +1,7 @@
+-main M
+-neko run.n
+-lib arguable
+
+--next
+
+-cmd haxelib run snowfall
