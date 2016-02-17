@@ -217,6 +217,7 @@ class M {
                 if(cur.ver == 'dev') {
                     var git_path = U.normalize(Path.join([cur.path,'.git']));
                     if(sys.FileSystem.exists(git_path)) {
+                        log('> update $lib - git pull - run at ${cur.path}\n');
                         U.run('git', ['pull', '--progress'], cur.path, true);
                     } else {
                         log('> Error - !! - cannot update dev version of a library, only git based versions');

@@ -45,16 +45,17 @@ class U {
             var done = false;
             var so = Sys.stdout();
             while(!done) {
-                try { 
-                    so.writeString(p.stdout.readLine()+'\n'); 
-                } catch(ex:haxe.io.Eof) {
-                    done_out = true;
-                }
 
                 try {
                     so.writeString(p.stderr.readLine()+'\n');
-                } catch(ex:haxe.io.Eof) {
+                } catch(e:Dynamic) {
                     done_err = true;
+                }
+
+                try { 
+                    so.writeString(p.stdout.readLine()+'\n'); 
+                } catch(e:Dynamic) {
+                    done_out = true;
                 }
 
                 done = done_out && done_err;
