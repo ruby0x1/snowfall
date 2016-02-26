@@ -66,12 +66,12 @@ class M {
 
     //validation 
 
-        if(['shortcuts','update','news'].indexOf(action.name) == -1) {
+        if(['shortcuts','update','status','news'].indexOf(action.name) == -1) {
             log('\n> unknown option `${action.name}`\n');
             return help();
         }
 
-        if(action.name == 'update') { 
+        if(action.name == 'update' || action.name == 'status') { 
             var libs = ['snow','luxe'];
 
             if(!(lib != null && lib.name != '')) {
@@ -80,7 +80,7 @@ class M {
             }
             
             if(libs.indexOf(lib.name) == -1) {
-                log('\n> unknown lib `${lib.name}` - use haxelib instead.\n> Only luxe and snow can be updated this way.\n');
+                log('\n> unknown lib `${lib.name}` - use haxelib instead.\n> Only `${libs.join(", ")}` can be updated this way.\n');
                 return help();
             }
         }
@@ -91,20 +91,35 @@ class M {
             var path = '';
             if(lib != null) path = lib.name;
             shortcuts(path);
-        } else {
-            if(online) {
+        } else if(action.name == 'status') {
+            if(require_online()) {
+                status(lib.name);
+            }
+        } else if(action.name == 'update') {
+            if(require_online()) {
                 update(lib.name);
-            } else {
-                log('\nUH OH');
-                log('\n> You appear to be offline, can\'t update!');
             }
         }
 
     } //check_args
 
+    function require_online() {
+        
+        if(online) return true;
+
+        log('\nUH OH');
+        log('\n> You appear to be offline, can\'t proceed!');
+
+        return false;
+
+    } //require_online
+
         //:todo: There's a whole lot of stuff to add here, 
         //but blocking it in for now
     function news(topic = 'snowkitdev') {
+
+        log('> fetching news...');
+        log('> viewable at http://snowkit.org/tag/$topic/\n');
 
         var posts = U.rss('http://snowkit.org/tag/$topic/rss/');
         for(post in posts) log('  ${post.posted}  |  ${post.title} ');
@@ -211,11 +226,11 @@ class M {
 
     } //shortcuts
 
-    function update(name:String) {
-
+    function list_git_deps(lib:String) {
+        
         var list = ['flow'];
 
-        if(name == 'snow' || name == 'luxe') {
+        if(lib == 'snow' || lib == 'luxe') {
             list = list.concat([
                 'linc_openal',
                 'linc_timestamp',
@@ -227,9 +242,60 @@ class M {
             ]);
         }
 
-        if(name == 'luxe') {
+        if(lib == 'luxe') {
             list.push('luxe');
         }
+
+        return list;
+
+    } //list_git_deps
+
+    function status(name:String) {
+
+        var list = list_git_deps(name);
+        for(lib in list) {
+            var found = Haxe.lib(lib);
+            if(found == null) {
+                //lib is not installed
+                log('> cannot check the status of $name, it is not installed!\n');
+                log('> you can use the update command to install missing libraries');
+            } else {
+                //installed,
+                Sys.print('> $lib ... ');
+                var cur = Haxe.lib_current(lib);
+                if(cur.ver == 'dev') {
+                    var git_path = U.normalize(Path.join([cur.path,'.git']));
+                    if(sys.FileSystem.exists(git_path)) {
+                        #if debug log('> check $lib - `git rev-list HEAD...origin/master --count` - run at ${cur.path}\n'); #end
+                        var pre = Sys.getCwd();
+                        Sys.setCwd(cur.path);
+                        U.run('git', ['fetch']);
+                        var o = U.run('git', ['rev-list','HEAD...origin/master','--count']);
+                        var count = -1;
+                        if(o.code == 0 && o.out != '') count = Std.parseInt(o.out.trim());
+                        if(count >= 0) {
+                            log('$count ${count == 1 ? "update" : "updates"}');
+                            if(count > 0) {
+                                log('');
+                                Sys.command('git', ['log', 'HEAD..origin/master', '--oneline']);
+                            }
+                        }
+                        Sys.setCwd(pre);
+                    } else {
+                        log('> Error - !! - cannot update dev version of a library, only git based versions');
+                    }
+                } else {
+                    log(' !! currently only git or dev based haxelib installs of $lib are supported by snowfall');
+                }
+            }
+        }//each
+        log('');
+
+    } //
+
+    function update(name:String) {
+
+        var list = list_git_deps(name);
 
         log('> requesting updates for $name...');
 
@@ -271,7 +337,9 @@ class M {
     function help() {
 
         log('options\n');
+        log('> news             |  list snowkit dev posts from snowkit.org');
         log('> update [lib]     |  update or install a lib (snow or luxe)');
+        log('> status [lib]     |  check if there are updates on the repo for a lib (snow or luxe)');
         log('> shortcuts [path] |  install "flow" & "snowfall" command line shortcuts into [path]');
         log('\nnotes\n');
         log('> All dependencies of [lib] will be installed or updated.');
