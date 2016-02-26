@@ -3,8 +3,8 @@
     "license": "MIT",
     "url": "https://snowkit.org/",
     "description": "A temporary convenience for luxe and snow users during active development. see https://snowkit.org",
-    "releasenote": "fix haxelib run path confusing shortcuts command, and args being wrong",
-    "version": "0.0.12",
+    "releasenote": "fix some bugs, add initial snowfall status and snowfall news commands",
+    "version": "0.0.13",
     "contributors": [ "underscorediscovery" ],
     "tags": [],
     "dependencies": {}
