@@ -77,4 +77,39 @@ class U {
 
     } //run
 
+    public static function rss(url:String) : Array<{ title:String, posted:String, date:Date, link:String }> {
+
+        var data = haxe.Http.requestUrl(url);
+        var xml = haxe.xml.Parser.parse(data, true);
+        var rss = new haxe.xml.Fast(xml.firstElement());
+        var channel = rss.node.channel;
+        var res = [];
+        var r_date = ~/(?:.*, ?)(\d+) ?(.{3}) ?(\d+)/;
+        var date: Date = null;
+        var posted = 'unknown';
+        var months = ['jan' => '01', 'feb' => '02', 'mar' => '03', 'apr' => '04', 'may' => '05', 'jun' => '06', 'jul' => '07', 'aug' => '08', 'sep' => '09', 'oct' => '10', 'nov' => '11', 'dec' => '12'];
+
+        for(item in channel.nodes.item) {
+            
+            if(r_date.match(item.node.pubDate.innerData)) {
+                var dd = StringTools.lpad(r_date.matched(1),'0',2);
+                var mon = r_date.matched(2);
+                var mm = months.get(mon.toLowerCase());
+                var yr = Std.parseInt(r_date.matched(3));
+                date = Date.fromString('$yr-$mm-$dd');
+                posted = '$dd $mon $yr';
+            }
+
+            res.push({
+                date: date,
+                posted: posted,
+                link: item.node.link.innerData,
+                title: item.node.title.innerData
+            });
+        }
+
+        return res;
+
+    } //rss
+
 }

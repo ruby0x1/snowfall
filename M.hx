@@ -24,7 +24,6 @@ class M {
 
         log('');
         online = check_lib_update('snowfall');
-        if(online) check_lib_update('hxcpp');
         check_args();
 
     } //main
@@ -54,10 +53,20 @@ class M {
         var action = args.invalid[0];
         var lib = args.invalid.length > 1 ? args.invalid[1] : null;
 
+    //immediate actions
+
+        if(action.name == 'news') {
+            return news();
+        }
+
         log('\n> haxe - version - ${Haxe.version.ver}');
         log('> haxelib - path - ${Haxe.haxelib_path}\n');
 
-        if(['shortcuts','update'].indexOf(action.name) == -1) {
+        if(online) check_lib_update('hxcpp');
+
+    //validation 
+
+        if(['shortcuts','update','news'].indexOf(action.name) == -1) {
             log('\n> unknown option `${action.name}`\n');
             return help();
         }
@@ -76,6 +85,8 @@ class M {
             }
         }
 
+    //actions
+
         if(action.name == 'shortcuts') {
             var path = '';
             if(lib != null) path = lib.name;
@@ -90,6 +101,17 @@ class M {
         }
 
     } //check_args
+
+        //:todo: There's a whole lot of stuff to add here, 
+        //but blocking it in for now
+    function news(topic = 'snowkitdev') {
+
+        var posts = U.rss('http://snowkit.org/tag/$topic/rss/');
+        for(post in posts) log('  ${post.posted}  |  ${post.title} ');
+
+        log('');
+
+    } //news
 
     function url_for(name:String) {
         return switch(name) {
