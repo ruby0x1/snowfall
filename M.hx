@@ -62,9 +62,18 @@ class M {
             return help();
         }
 
-        if(action.name == 'update' && ['snow','luxe'].indexOf(lib.name) == -1) {
-            log('\n> unknown lib `${lib.name}` - use haxelib instead\n');
-            return help();
+        if(action.name == 'update') { 
+            var libs = ['snow','luxe'];
+
+            if(!(lib != null && lib.name != '')) {
+                log('\n> the update command requires a lib name, one of: `${libs.join(", ")}`\n');
+                return help();
+            }
+            
+            if(libs.indexOf(lib.name) == -1) {
+                log('\n> unknown lib `${lib.name}` - use haxelib instead.\n> Only luxe and snow can be updated this way.\n');
+                return help();
+            }
         }
 
         if(action.name == 'shortcuts') {
