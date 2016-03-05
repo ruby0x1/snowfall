@@ -22,22 +22,27 @@ class M {
 
         Haxe.init();
 
-        log('');
         online = check_lib_update('snowfall');
         check_args();
 
     } //main
 
     function check_lib_update(name:String) : Bool {
+        
         var cur = Haxe.lib_current(name);
         var lat = Haxe.lib_latest(name);
-        if(lat != null && lat != null) {
+
+        if(cur == null) {
+            log('> $name is not installed. You can run `haxelib install $name` if you need it.');
+        } else if(lat != null) {
             if(Haxe.lib_compare(cur, lat) < 0) {
                 log('> $name ${lat.ver} is available, your $name version is set to ${cur.ver}.\n  - You can run `haxelib update $name` to update.');
             }
         }
+
         return lat != null;
-    }
+
+    } //
 
     function check_args() {
 
@@ -64,7 +69,7 @@ class M {
 
         if(online) check_lib_update('hxcpp');
 
-    //validation 
+    //validation
 
         if(['shortcuts','update','status','news'].indexOf(action.name) == -1) {
             log('\n> unknown option `${action.name}`\n');
@@ -75,7 +80,7 @@ class M {
             var libs = ['snow','luxe'];
 
             if(!(lib != null && lib.name != '')) {
-                log('\n> the update command requires a lib name, one of: `${libs.join(", ")}`\n');
+                log('\n> the ${action.name} command requires a lib name, one of: `${libs.join(", ")}`\n');
                 return help();
             }
             
