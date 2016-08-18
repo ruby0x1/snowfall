@@ -3,8 +3,8 @@
     "license": "MIT",
     "url": "https://snowkit.org/",
     "description": "A temporary convenience for luxe and snow users during active development. see https://snowkit.org",
-    "releasenote": "fix hxcpp related crashes on first install",
-    "version": "0.0.14",
+    "releasenote": "add test command for post install validation",
+    "version": "0.0.15",
     "contributors": [ "underscorediscovery" ],
     "tags": [],
     "dependencies": {}

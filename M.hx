@@ -71,7 +71,7 @@ class M {
 
     //validation
 
-        if(['shortcuts','update','status','news'].indexOf(action.name) == -1) {
+        if(['shortcuts','update','status','news','test'].indexOf(action.name) == -1) {
             log('\n> unknown option `${action.name}`\n');
             return help();
         }
@@ -104,6 +104,16 @@ class M {
             if(require_online()) {
                 update(lib.name);
             }
+        } else if(action.name == 'test') {
+            if(lib != null) {
+                if(lib.name != 'snow' && lib.name != 'luxe') {
+                    log('\nCan only test `luxe` or `snow`');
+                } else {
+                    test(lib.name);
+                }
+            } else {
+                log('\ntest requires a lib argument, try `snowfall test luxe`');
+            }
         }
 
     } //check_args
@@ -132,6 +142,40 @@ class M {
         log('');
 
     } //news
+
+    function test(lib:String) {
+
+        var found = Haxe.lib(lib);
+        if(found == null) {
+                //lib is not installed
+            log('> cannot test $lib, it is not installed!\n');
+            log('> you can use the update command to install missing libraries');
+            log('> try `snowfall update $lib` before running test');
+        } else {
+                //installed
+            Sys.print('\n> Testing $lib has been setup ... ');
+            Sys.print('\n> ()note this runs a web target build, native targets differ!)');
+
+            var cur = Haxe.lib_current(lib);
+            var sample_path = switch(lib) {
+                case 'luxe': 'tests/features/draw/';
+                case 'snow': 'samples/basic/';
+                case _: return;
+            }
+            
+            var test_path = U.normalize(Path.join([cur.path,sample_path]));
+            if(sys.FileSystem.exists(test_path)) {
+                log('\n> Running the test sample at `$test_path`');
+                log('\n> Your browser should open the link shortly!');
+                U.run('haxelib', ['run', 'flow', 'run', 'web', '--timeout', '4', '--project-root', test_path]);
+            } else {
+                log('\nerror: can\'t find test path where expected at: `$test_path`');
+                log('can\'t continue attempt to test.');
+            }
+
+        }
+
+    } //test
 
     function url_for(name:String) {
         return switch(name) {
@@ -345,6 +389,7 @@ class M {
         log('> news             |  list snowkit dev posts from snowkit.org');
         log('> update [lib]     |  update or install a lib (snow or luxe)');
         log('> status [lib]     |  check if there are updates on the repo for a lib (snow or luxe)');
+        log('> test [lib]       |  run a web build of [lib] to validate correct setup (snow or luxe)');
         log('> shortcuts [path] |  install "flow" & "snowfall" command line shortcuts into [path]');
         log('\nnotes\n');
         log('> All dependencies of [lib] will be installed or updated.');
