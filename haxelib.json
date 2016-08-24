@@ -1,8 +1,8 @@
 {
     "name": "snowfall",
     "license": "MIT",
-    "url": "https://snowkit.org/",
-    "description": "A temporary convenience for luxe and snow users during active development. see https://snowkit.org",
+    "url": "https://luxeengine.com/",
+    "description": "A temporary convenience for luxe and snow users during active development. see https://luxeengine.com/",
     "releasenote": "add test command for post install validation",
     "version": "0.0.15",
     "contributors": [ "underscorediscovery" ],
