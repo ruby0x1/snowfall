@@ -61,7 +61,7 @@ class M {
     //immediate actions
 
         if(action.name == 'news') {
-            return news();
+            return news(lib != null ? lib.name : null);
         }
 
         log('\n> haxe - version - ${Haxe.version.ver}');
@@ -131,12 +131,18 @@ class M {
 
         //:todo: There's a whole lot of stuff to add here, 
         //but blocking it in for now
-    function news(topic = 'snowkitdev') {
+    function news(dest:String) {
+
+        var url = switch(dest) {
+            case 'snowkit': 'http://snowkit.org/tag/snowkitdev/';
+            case 'luxe': 'http://luxeengine.com/tag/dev/';
+            case _: 'http://snowkit.org/tag/snowkitdev/';
+        }
 
         log('> fetching news...');
-        log('> viewable at http://snowkit.org/tag/$topic/\n');
+        log('> viewable at $url\n');
 
-        var posts = U.rss('http://snowkit.org/tag/$topic/rss/');
+        var posts = U.rss('${url}rss/');
         for(post in posts) log('  ${post.posted}  |  ${post.title} ');
 
         log('');
@@ -386,7 +392,7 @@ class M {
     function help() {
 
         log('options\n');
-        log('> news             |  list snowkit dev posts from snowkit.org');
+        log('> news [which]     |  list relevant dev log post (snowkit or luxe)');
         log('> update [lib]     |  update or install a lib (snow or luxe)');
         log('> status [lib]     |  check if there are updates on the repo for a lib (snow or luxe)');
         log('> test [lib]       |  run a web build of [lib] to validate correct setup (snow or luxe)');
