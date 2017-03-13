@@ -135,8 +135,7 @@ class M {
 
         var url = switch(dest) {
             case 'snowkit': 'http://snowkit.org/tag/snowkitdev/';
-            case 'luxe': 'http://luxeengine.com/tag/dev/';
-            case _: 'http://snowkit.org/tag/snowkitdev/';
+            case _: 'http://luxeengine.com/tag/update/';
         }
 
         log('> fetching news...');
@@ -375,6 +374,7 @@ class M {
                         var pre = Sys.getCwd();
                         Sys.setCwd(cur.path);
                         Sys.command('git', ['pull', '--progress']);
+                        Sys.command('git', ['submodule', 'update', '--init', '--recursive']);
                         Sys.setCwd(pre);
                     } else {
                         log('> Error - !! - cannot update dev version of a library, only git based versions');

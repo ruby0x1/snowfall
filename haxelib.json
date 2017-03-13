@@ -4,7 +4,7 @@
     "url": "https://luxeengine.com/",
     "description": "A temporary convenience for luxe and snow users during active development. see https://luxeengine.com/",
     "releasenote": "add test command for post install validation, added alternative news link",
-    "version": "0.0.15",
+    "version": "0.0.16",
     "contributors": [ "underscorediscovery" ],
     "tags": [],
     "dependencies": {}
